@@ -16,6 +16,7 @@
       background-color: #ffe6f0;
       font-family: 'Comic Sans MS', sans-serif;
       text-align: center;
+      touch-action: none; /* Helps prevent some scrolling on mobile */
     }
 
     h1 {
@@ -125,10 +126,11 @@
       moveBasket(e.clientX);
     });
 
-    // Mobile: touch input
+    // Mobile: touch input - prevent scrolling during drag
     document.addEventListener("touchmove", (e) => {
+      e.preventDefault(); // prevent page scroll
       moveBasket(e.touches[0].clientX);
-    });
+    }, { passive: false });
 
     function createHeart() {
       if (gameOver) return;
