@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Get Well Soon 💖</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+      background-color: #ffe6f0;
+      font-family: 'Comic Sans MS', sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ff69b4;
+      margin-top: 20px;
+      font-size: 1.5rem;
+    }
+
+    #basket {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      width: 100px;
+      height: 50px;
+      margin-left: -50px;
+      background: #ffb6c1;
+      border-radius: 20px;
+      box-shadow: 0 0 10px #ff69b4;
+      z-index: 2;
+    }
+
+    .heart {
+      position: absolute;
+      top: 0;
+      font-size: 30px;
+      animation: fall 4s linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        top: 100vh;
+      }
+    }
+
+    #score {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      font-size: 18px;
+      color: #d63384;
+    }
+
+    #love-letter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80%;
+      transform: translate(-50%, -50%);
+      background: #fff0f5;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #ff69b4;
+      display: none;
+      z-index: 10;
+    }
+
+    #love-letter h2 {
+      color: #ff1493;
+      margin-bottom: 20px;
+    }
+
+    #love-letter p {
+      font-size: 18px;
+      color: #444;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Catch the Love, Get Well Soon 💕</h1>
+  <div id="score">Hearts Caught: 0 / 50</div>
+  <div id="basket"></div>
+  <div id="love-letter">
+    <h2>💌 To My Sweetheart</h2>
+    <p>
+      I know you're not feeling your best right now, but I wanted to make something just for you.  
+      Every heart you caught is a little piece of my love.  
+      You're strong, beautiful, and incredibly special to me.  
+      I hope this silly little game made you smile—even a little.
+      <br><br>
+      Get well soon, my love. I'm always here for you. 💖  
+      <br><br>
+      Love always,<br>
+      Your favorite person 😘
+    </p>
+  </div>
+
+  <script>
+    const basket = document.getElementById("basket");
+    const scoreDisplay = document.getElementById("score");
+    const loveLetter = document.getElementById("love-letter");
+
+    let score = 0;
+    const maxHearts = 50;
+    let gameOver = false;
+
+    function moveBasket(x) {
+      if (!gameOver) {
+        basket.style.left = `${x - 50}px`;
+      }
+    }
+
+    // Desktop: mouse input
+    document.addEventListener("mousemove", (e) => {
+      moveBasket(e.clientX);
+    });
+
+    // Mobile: touch input
+    document.addEventListener("touchmove", (e) => {
+      moveBasket(e.touches[0].clientX);
+    });
+
+    function createHeart() {
+      if (gameOver) return;
+
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "❤️";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+
+      document.body.appendChild(heart);
+
+      const fallInterval = setInterval(() => {
+        const heartRect = heart.getBoundingClientRect();
+        const basketRect = basket.getBoundingClientRect();
+
+        if (
+          heartRect.bottom >= basketRect.top &&
+          heartRect.left < basketRect.right &&
+          heartRect.right > basketRect.left
+        ) {
+          clearInterval(fallInterval);
+          heart.remove();
+          score++;
+          scoreDisplay.textContent = `Hearts Caught: ${score} / ${maxHearts}`;
+
+          if (score >= maxHearts) {
+            endGame();
+          }
+        } else if (heartRect.top >= window.innerHeight) {
+          clearInterval(fallInterval);
+          heart.remove();
+        }
+      }, 50);
+    }
+
+    function endGame() {
+      gameOver = true;
+      loveLetter.style.display = "block";
+    }
+
+    setInterval(createHeart, 800);
+  </script>
+</body>
+</html>
